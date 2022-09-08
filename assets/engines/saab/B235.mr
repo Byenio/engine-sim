@@ -22,17 +22,17 @@ public node i4_ignition {
             rev_limit: rev_limit,
             limiter_duration: 0.1
         )
-            .connect_wire(wires.wire1, (0.0 / 4.0) * cycle)
-            .connect_wire(wires.wire3, (1.0 / 4.0) * cycle)
-            .connect_wire(wires.wire4, (2.0 / 4.0) * cycle)
-            .connect_wire(wires.wire2, (3.0 / 4.0) * cycle);
+            .connect_wire(wires.wire1, (0.0 / 4.0) * cycle)  // 1
+            .connect_wire(wires.wire3, (1.0 / 4.0) * cycle)  // 3
+            .connect_wire(wires.wire4, (2.0 / 4.0) * cycle)  // 4
+            .connect_wire(wires.wire2, (3.0 / 4.0) * cycle); // 2
 }
 
 public node i4_camshaft_builder {
     input lobe_profile: comp_cams_magnum_11_450_8_lobe_profile();
     input intake_lobe_profile: lobe_profile;
     input exhaust_lobe_profile: lobe_profile;
-    input lobe_separation: 110.0 * units.deg;
+    input lobe_separation: 90.0 * units.deg;
     input intake_lobe_center: lobe_separation;
     input exhaust_lobe_center: lobe_separation;
     input advance: 0.0 * units.deg;
@@ -53,16 +53,16 @@ public node i4_camshaft_builder {
     label rot360(360 * units.deg)
 
     _exhaust_cam
-        .add_lobe(rot360 - exhaust_lobe_center)
-        .add_lobe((rot360 - exhaust_lobe_center) + 2 * rot)
-        .add_lobe((rot360 - exhaust_lobe_center) + 3 * rot)
-        .add_lobe((rot360 - exhaust_lobe_center) + 1 * rot)
+        .add_lobe(rot360 - exhaust_lobe_center)             // 1
+        .add_lobe((rot360 - exhaust_lobe_center) + 2 * rot) // 3
+        .add_lobe((rot360 - exhaust_lobe_center) + 3 * rot) // 4
+        .add_lobe((rot360 - exhaust_lobe_center) + 1 * rot) // 2
 
     _intake_cam
-        .add_lobe(rot360 + intake_lobe_center)
-        .add_lobe(rot360 + intake_lobe_center + 2 * rot)
-        .add_lobe(rot360 + intake_lobe_center + 3 * rot)
-        .add_lobe(rot360 + intake_lobe_center + 1 * rot)
+        .add_lobe(rot360 + intake_lobe_center)              // 1
+        .add_lobe(rot360 + intake_lobe_center + 2 * rot)    // 3
+        .add_lobe(rot360 + intake_lobe_center + 3 * rot)    // 4
+        .add_lobe(rot360 + intake_lobe_center + 1 * rot)    // 2
 }
 
 private node saab_i4_head {
@@ -144,7 +144,7 @@ public node b235 {
     label bore(90 * units.mm)
     label rod_length(5.142 * units.inch)
     label rod_mass(780 * units.g)
-    label compression_height(32.8 * units.mm)
+    label compression_height(32.9 * units.mm)
     label crank_mass(9.39 * units.kg)
     label flywheel_mass(6.8 * units.kg)
     label flywheel_radius(6 * units.inch)
@@ -171,10 +171,10 @@ public node b235 {
         tdc: constants.pi / 2
     )
 
-    rod_journal rj0(angle: (0.0 / 4.0) * 360 * units.deg)
-	rod_journal rj1(angle: (2.0 / 4.0) * 360 * units.deg)
-	rod_journal rj2(angle: (3.0 / 4.0) * 360 * units.deg)
-	rod_journal rj3(angle: (1.0 / 4.0) * 360 * units.deg)
+    rod_journal rj0(angle: (0.0 / 4.0) * 360 * units.deg)   // 1
+	rod_journal rj1(angle: (2.0 / 4.0) * 360 * units.deg)   // 3
+	rod_journal rj2(angle: (3.0 / 4.0) * 360 * units.deg)   // 4
+	rod_journal rj3(angle: (1.0 / 4.0) * 360 * units.deg)   // 2
 
     c0
         .add_rod_journal(rj0)
@@ -296,7 +296,7 @@ public node b235 {
 
     b0.set_cylinder_head (
         saab_i4_head(
-            chamber_volume: 48 * units.cc,
+            chamber_volume: 46 * units.cc,
             intake_camshaft: camshaft.intake_cam,
             exhaust_camshaft: camshaft.exhaust_cam,
             flow_attenuation: 0.9
@@ -338,7 +338,7 @@ private node saab_vehicle {
 private node saab_transmission {
     alias output __out:
         transmission(
-            max_clutch_torque: 200 * units.lb_ft
+            max_clutch_torque: 400 * units.lb_ft
         )
         .add_gear(13.70)
         .add_gear(7.12)
